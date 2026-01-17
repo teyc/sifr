@@ -1,0 +1,32 @@
+@page "/transactions"
+@using System.Net.Http.Json
+@inject HttpClient Http
+
+<h3>Transactions</h3>
+
+<button class="btn btn-sm btn-secondary" @onclick="Load">Reload</button>
+
+@if (transactions is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+    @foreach (var t in transactions)
+    {
+        <li>@t.Id - @t.Description - @t.Amount @t.Currency</li>
+    }
+    </ul>
+}
+
+@code {
+    Sifr.Shared.Models.Transaction[]? transactions;
+
+    protected override async Task OnInitializedAsync() => await Load();
+
+    async Task Load()
+    {
+        transactions = await Http.GetFromJsonAsync<Sifr.Shared.Models.Transaction[]>("api/transactions");
+    }
+}
