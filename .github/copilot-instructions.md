@@ -3,6 +3,10 @@
 ## Overview
 This document outlines the key abstractions, common patterns, and component mappings for the Sifr project, a Blazor WebAssembly application mimicking Xero's workflows with AI enhancements. As a senior .NET Blazor expert, these guidelines ensure consistency, maintainability, and efficient development.
 
+## Development loop
+
+Whenever there is question, do not stop. Discuss with accounting-sme subagent how to proceed.
+
 ## Key Abstractions
 
 ### 1. Data Models (Shared Project)
@@ -243,6 +247,21 @@ Based on Xero screenshot summaries, map UI elements to MudBlazor components.
 ### Testing
 - Unit tests for services and components using bUnit.
 - Integration tests for API calls.
+- Monetary amounts must be serialized as integers to avoid floating-point precision issues. Use the minor unit (e.g., cents for USD) and include a scale factor.
+
+```json
+{
+  "amount_minor": 12345,
+  "scale": 2,
+  "currency": "AUD"
+}
+```
+
+### Auditing and Append-Only
+- Implement comprehensive audit trails for all financial data changes to ensure compliance with accounting standards (e.g., GAAP, IFRS) and regulatory requirements. Audit logs must record who, when, what, and why for every transaction, journal entry, and data modification.
+- Use append-only storage patterns, such as Event Sourcing, for financial data to maintain immutability. Never update or delete historical records; instead, append new events or corrections. This ensures data integrity, supports temporal queries, and provides a complete chronological history.
+- Store audit logs separately from operational data, with restricted access (privileged mode only). Use immutable data structures and cryptographic hashing to prevent tampering.
+- For backend implementation, consider event-driven architectures where domain events (e.g., TransactionCreated, InvoicePaid) are persisted in an append-only event log, from which the current state can be reconstructed.
 
 ### Security
 - Role-based rendering: @if (user.Role == Role.Accountant) { ... }
