@@ -1,0 +1,28 @@
+@page "/accounts"
+@using System.Net.Http.Json
+@inject HttpClient Http
+
+<h3>Accounts</h3>
+
+@if (accounts is null)
+{
+    <p>Loading...</p>
+}
+else
+{
+    <ul>
+    @foreach (var a in accounts)
+    {
+        <li>@a.Code - @a.Name</li>
+    }
+    </ul>
+}
+
+@code {
+    Sifr.Shared.Models.Account[]? accounts;
+
+    protected override async Task OnInitializedAsync()
+    {
+        accounts = await Http.GetFromJsonAsync<Sifr.Shared.Models.Account[]>("api/accounts");
+    }
+}
