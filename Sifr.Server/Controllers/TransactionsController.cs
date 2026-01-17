@@ -87,3 +87,4 @@ namespace Sifr.Server.Controllers
     }
 
     public record TransactionMatchRequest(Guid DebitAccountId, Guid CreditAccountId);
+}
