@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Sifr.Shared.Models;
+using Sifr.Server.Services;
 
 namespace Sifr.Server.Controllers
 {
@@ -11,6 +12,12 @@ namespace Sifr.Server.Controllers
     public class TransactionsController : ControllerBase
     {
         private static readonly List<Transaction> Store = new();
+        private readonly IAccountingValidationService _validationService;
+
+        public TransactionsController(IAccountingValidationService validationService)
+        {
+            _validationService = validationService;
+        }
 
         [HttpGet]
         public ActionResult<IEnumerable<Transaction>> Get() => Ok(Store);
@@ -47,5 +54,36 @@ namespace Sifr.Server.Controllers
             var removed = Store.RemoveAll(x => x.Id == id);
             return removed > 0 ? NoContent() : NotFound();
         }
+
+        [HttpPost("{id:guid}/match")]
+        public IActionResult MatchTransaction(Guid id, [FromBody] TransactionMatchRequest request)
+        {
+            var transaction = Store.FirstOrDefault(x => x.Id == id);
+            if (transaction == null) return NotFound();
+
+            // Validate double-entry requirements
+            var validation = _validationService.ValidateTransactionMatch(transaction, request.DebitAccountId, request.CreditAccountId);
+            if (!validation.IsValid)
+            {
+                return BadRequest(new { errors = validation.Errors });
+            }
+
+            // Update transaction status
+            var matchedTransaction = transaction with
+            {
+                AccountId = request.DebitAccountId, // Primary account for display
+                Status = TransactionStatus.Matched,
+                UpdatedAt = DateTime.UtcNow
+            };
+
+            var index = Store.FindIndex(x => x.Id == id);
+            Store[index] = matchedTransaction;
+
+            // In a real implementation, this would also create a corresponding JournalEntry
+            // with debit and credit lines
+
+            return Ok(matchedTransaction);
+        }
     }
-}
+
+    public record TransactionMatchRequest(Guid DebitAccountId, Guid CreditAccountId);

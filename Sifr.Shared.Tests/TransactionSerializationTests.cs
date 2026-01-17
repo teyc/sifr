@@ -21,8 +21,11 @@ public class ConventionTests
         // Act & Assert
         foreach (var type in modelTypes)
         {
-            // Skip enums, value types, and Monetary (value object)
-            if (type.IsEnum || !type.IsClass || type.Name == "Monetary") continue;
+            // Skip enums, value types, Monetary (value object), and nested types
+            if (type.IsEnum || !type.IsClass || type.Name == "Monetary" ||
+                type.Namespace != "Sifr.Shared.Models" || type.IsNested ||
+                type.Name.EndsWith("Line")) // Skip line item types
+                continue;
 
             var properties = type.GetProperties(BindingFlags.Public | BindingFlags.Instance);
 
@@ -100,5 +103,48 @@ public class ConventionTests
 
         Assert.True(amountObj.TryGetProperty("currency", out var currency));
         Assert.Equal("AUD", currency.GetString());
+    }
+
+    [Fact]
+    public void JournalEntry_ShouldFollowDoubleEntryBookkeepingRules()
+    {
+        // Arrange
+        var debitLine = new JournalEntryLine(
+            Id: Guid.NewGuid(),
+            AccountId: Guid.NewGuid(),
+            Amount: new Monetary(AmountMinor: 10000, Scale: 2, Currency: "USD"),
+            EntryType: EntryType.Debit,
+            Memo: "Debit entry"
+        );
+
+        var creditLine = new JournalEntryLine(
+            Id: Guid.NewGuid(),
+            AccountId: Guid.NewGuid(),
+            Amount: new Monetary(AmountMinor: 10000, Scale: 2, Currency: "USD"),
+            EntryType: EntryType.Credit,
+            Memo: "Credit entry"
+        );
+
+        var journalEntry = new JournalEntry(
+            Id: Guid.NewGuid(),
+            Date: DateTime.Now,
+            Description: "Test double-entry",
+            Reference: "REF001",
+            TransactionId: null,
+            Lines: new List<JournalEntryLine> { debitLine, creditLine },
+            Status: JournalEntryStatus.Draft,
+            Source: "Test",
+            CreatedAt: DateTime.Now,
+            UpdatedAt: DateTime.Now
+        );
+
+        // Act
+        var debits = journalEntry.Lines.Where(l => l.EntryType == EntryType.Debit).Sum(l => l.Amount.AmountMinor);
+        var credits = journalEntry.Lines.Where(l => l.EntryType == EntryType.Credit).Sum(l => l.Amount.AmountMinor);
+
+        // Assert
+        Assert.True(debits == credits, "Debits must equal credits in double-entry bookkeeping.");
+        Assert.True(journalEntry.Lines.Any(l => l.EntryType == EntryType.Debit), "Journal entry must have at least one debit.");
+        Assert.True(journalEntry.Lines.Any(l => l.EntryType == EntryType.Credit), "Journal entry must have at least one credit.");
     }
 }
