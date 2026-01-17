@@ -86,3 +86,4 @@ This task board organizes the 60 tickets from the PRD into a Kanban-style workfl
 - Update this file regularly to track status.
 - Use Git to version control changes for collaboration.</content>
 <parameter name="filePath">/Users/chuitey/toyapps/sifr/TASKBOARD.md
+- [ ] Consult accounting SME (assignee: accounting-sme): resolve domain rules for Transactions, Accounts, Tax, Reconciliation.
