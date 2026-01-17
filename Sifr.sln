@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sifr.Server", "Sifr.Server\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sifr.Shared", "Sifr.Shared\Sifr.Shared.csproj", "{15F22C07-C377-428B-A447-1B0E9640B2CF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sifr.Shared.Tests", "Sifr.Shared.Tests\Sifr.Shared.Tests.csproj", "{0135EAE1-418E-4401-82B8-A5912979DE3F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -55,6 +57,18 @@ Global
 		{15F22C07-C377-428B-A447-1B0E9640B2CF}.Release|x64.Build.0 = Release|Any CPU
 		{15F22C07-C377-428B-A447-1B0E9640B2CF}.Release|x86.ActiveCfg = Release|Any CPU
 		{15F22C07-C377-428B-A447-1B0E9640B2CF}.Release|x86.Build.0 = Release|Any CPU
+		{0135EAE1-418E-4401-82B8-A5912979DE3F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0135EAE1-418E-4401-82B8-A5912979DE3F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0135EAE1-418E-4401-82B8-A5912979DE3F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{0135EAE1-418E-4401-82B8-A5912979DE3F}.Debug|x64.Build.0 = Debug|Any CPU
+		{0135EAE1-418E-4401-82B8-A5912979DE3F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{0135EAE1-418E-4401-82B8-A5912979DE3F}.Debug|x86.Build.0 = Debug|Any CPU
+		{0135EAE1-418E-4401-82B8-A5912979DE3F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0135EAE1-418E-4401-82B8-A5912979DE3F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0135EAE1-418E-4401-82B8-A5912979DE3F}.Release|x64.ActiveCfg = Release|Any CPU
+		{0135EAE1-418E-4401-82B8-A5912979DE3F}.Release|x64.Build.0 = Release|Any CPU
+		{0135EAE1-418E-4401-82B8-A5912979DE3F}.Release|x86.ActiveCfg = Release|Any CPU
+		{0135EAE1-418E-4401-82B8-A5912979DE3F}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

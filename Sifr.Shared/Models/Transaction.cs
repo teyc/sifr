@@ -1,15 +1,15 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace Sifr.Shared.Models
 {
     public record Transaction(
         Guid Id,
         DateTime Date,
-        decimal Amount,
-        string Currency,
+        [property: JsonPropertyName("amount")] Monetary Amount,
         string Description,
         Guid? AccountId,
-        string Status,
+        TransactionStatus Status,
         string Source,
         DateTime CreatedAt,
         DateTime UpdatedAt

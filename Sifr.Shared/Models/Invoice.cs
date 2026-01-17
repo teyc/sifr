@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Sifr.Shared.Models
 {
@@ -8,9 +9,10 @@ namespace Sifr.Shared.Models
         Guid CustomerId,
         DateTime Date,
         DateTime DueDate,
-        decimal Amount,
-        string Currency,
-        string Status,
-        List<object> Lines
+        [property: JsonPropertyName("amount")] Monetary Amount,
+        InvoiceStatus Status,
+        List<object> Lines,
+        DateTime CreatedAt,
+        DateTime UpdatedAt
     );
 }
