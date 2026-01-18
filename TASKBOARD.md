@@ -11,8 +11,6 @@ This task board organizes the 60 tickets from the PRD into a Kanban-style workfl
 ## Tickets
 
 ### Backlog
-1. **Ticket 1.1: Initialize Blazor WASM Solution** - Description: Create a new Blazor WebAssembly project with ASP.NET Core WebAPI backend using .NET 8. Configure project structure with separate folders for Client, Server, Shared. - Acceptance Criteria: Solution builds successfully; basic "Hello World" page renders in browser. - Dependencies: None. - Assignee: Unassigned
-2. **Ticket 1.2: Configure Authentication** - Description: Implement OAuth authentication with role-based access (Owner, Accountant, Bookkeeper). Use ASP.NET Identity or external provider. - Acceptance Criteria: Login/logout works; roles assigned correctly. - Dependencies: Ticket 1.1. - Assignee: Unassigned
 3. **Ticket 1.3: Set Up Database** - Description: Install PostgreSQL, configure connection strings, set up Entity Framework Core. - Acceptance Criteria: Database connection established; initial migration runs. - Dependencies: Ticket 1.1. - Assignee: Unassigned
 4. **Ticket 1.4: CI/CD Pipeline** - Description: Set up GitHub Actions or Azure DevOps for build, test, deploy. - Acceptance Criteria: Pipeline runs on push; deploys to staging. - Dependencies: Ticket 1.1. - Assignee: Unassigned
 5. **Ticket 2.1: Define Core Entities** - Description: Create EF models for User, Company, Account, Transaction, Invoice, Bill, TaxCode. - Acceptance Criteria: Models compile; relationships defined. - Dependencies: Ticket 1.3. - Assignee: Unassigned
@@ -80,10 +78,34 @@ This task board organizes the 60 tickets from the PRD into a Kanban-style workfl
 ### Done
 - None
 
+### Ticket Status Review
+
+#### Backlog
+2. **Ticket 1.2: Configure Authentication** - Status: Unassigned
+3. **Ticket 1.3: Set Up Database** - Status: Unassigned
+4. **Ticket 1.4: CI/CD Pipeline** - Status: Unassigned
+5. **Ticket 2.1: Define Core Entities** - Status: Unassigned
+6. **Ticket 2.2: Implement Multi-Tenancy** - Status: Unassigned
+7. **Ticket 2.3: Migrations and Seeding** - Status: Unassigned
+
+#### In Progress
+- No tickets currently in progress.
+
+#### Review
+- No tickets currently under review.
+
+#### Done
+1. **Ticket 1.1: Initialize Blazor WASM Solution** - Status: Completed
+2. **Ticket 1.2: Configure Authentication** - Status: Completed
+
+---
+
+### Summary
+- Tickets 1.1 and 1.2 have been completed: The Blazor WASM solution is initialized and builds successfully with a basic "Hello World" page. Authentication is configured with ASP.NET Identity, roles (Owner, Accountant, Bookkeeper), and login/logout endpoints.
+- Remaining tickets are unassigned and in the backlog. No progress has been made on other tasks yet.
+
 ## Instructions
 - To assign a ticket: Update the Assignee field and move to In Progress.
 - Move tickets between columns as work progresses.
 - Update this file regularly to track status.
-- Use Git to version control changes for collaboration.</content>
-<parameter name="filePath">/Users/chuitey/toyapps/sifr/TASKBOARD.md
-- [x] Consult accounting SME (assignee: accounting-sme): resolve domain rules for Transactions, Accounts, Tax, Reconciliation.
+- Use Git to version control changes for collaboration.

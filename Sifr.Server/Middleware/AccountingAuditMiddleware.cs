@@ -51,23 +51,34 @@ public class AccountingAuditMiddleware
         var originalResponseBody = context.Response.Body;
         using var responseBody = new MemoryStream();
         context.Response.Body = responseBody;
-
-        await _next(context);
-
-        // Log response for accounting operations
-        if (IsAccountingEndpoint(request.Path))
+        try
         {
-            context.Response.Body.Seek(0, SeekOrigin.Begin);
-            var responseText = await new StreamReader(context.Response.Body).ReadToEndAsync();
-            context.Response.Body.Seek(0, SeekOrigin.Begin);
+            await _next(context);
 
-            _logger.LogInformation(
-                "Accounting API Response: Status {StatusCode}, Body: {ResponseBody}",
-                context.Response.StatusCode,
-                responseText);
+            // Log response for accounting operations
+            if (IsAccountingEndpoint(request.Path))
+            {
+                context.Response.Body.Seek(0, SeekOrigin.Begin);
+                var responseText = await new StreamReader(context.Response.Body).ReadToEndAsync();
+                context.Response.Body.Seek(0, SeekOrigin.Begin);
+
+                _logger.LogInformation(
+                    "Accounting API Response: Status {StatusCode}, Body: {ResponseBody}",
+                    context.Response.StatusCode,
+                    responseText);
+            }
+
+            // Only copy response body if not 204 No Content
+            if (context.Response.StatusCode != StatusCodes.Status204NoContent)
+            {
+                responseBody.Seek(0, SeekOrigin.Begin);
+                await responseBody.CopyToAsync(originalResponseBody);
+            }
         }
-
-        await responseBody.CopyToAsync(originalResponseBody);
+        finally
+        {
+            context.Response.Body = originalResponseBody;
+        }
     }
 
     private bool IsAccountingEndpoint(PathString path)
