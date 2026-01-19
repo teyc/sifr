@@ -1,64 +1,105 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Sifr.Shared.Models;
 using Sifr.Server.Services;
 
 namespace Sifr.Server.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class TransactionsController : ControllerBase
     {
-        private static readonly List<Transaction> Store = new();
+        private readonly ApplicationDbContext _context;
         private readonly IAccountingValidationService _validationService;
 
-        public TransactionsController(IAccountingValidationService validationService)
+        public TransactionsController(ApplicationDbContext context, IAccountingValidationService validationService)
         {
+            _context = context;
             _validationService = validationService;
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Transaction>> Get() => Ok(Store);
+        public async Task<ActionResult<IEnumerable<Transaction>>> Get()
+        {
+            return await _context.Transactions.ToListAsync();
+        }
 
         [HttpGet("{id:guid}")]
-        public ActionResult<Transaction> Get(Guid id)
+        public async Task<ActionResult<Transaction>> Get(Guid id)
         {
-            var t = Store.FirstOrDefault(x => x.Id == id);
-            return t is null ? NotFound() : Ok(t);
+            var transaction = await _context.Transactions.FindAsync(id);
+            return transaction is null ? NotFound() : Ok(transaction);
         }
 
         [HttpPost]
-        public ActionResult<Transaction> Post([FromBody] Transaction tx)
+        public async Task<ActionResult<Transaction>> Post([FromBody] Transaction tx)
         {
             var now = DateTime.UtcNow;
-            var newTx = tx with { Id = tx.Id == Guid.Empty ? Guid.NewGuid() : tx.Id, CreatedAt = now, UpdatedAt = now };
-            Store.Add(newTx);
+            var newTx = tx with { 
+                Id = tx.Id == Guid.Empty ? Guid.NewGuid() : tx.Id, 
+                CreatedAt = now, 
+                UpdatedAt = now 
+            };
+            
+            _context.Transactions.Add(newTx);
+            await _context.SaveChangesAsync();
             return CreatedAtAction(nameof(Get), new { id = newTx.Id }, newTx);
         }
 
         [HttpPut("{id:guid}")]
-        public IActionResult Put(Guid id, [FromBody] Transaction tx)
+        public async Task<IActionResult> Put(Guid id, [FromBody] Transaction tx)
         {
-            var idx = Store.FindIndex(x => x.Id == id);
-            if (idx < 0) return NotFound();
-            var updated = tx with { Id = id, UpdatedAt = DateTime.UtcNow };
-            Store[idx] = updated;
+            if (id != tx.Id) return BadRequest();
+
+            // Fetch existing as NoTracking to avoid tracking conflict when we attach the updated version
+            var existing = await _context.Transactions.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
+            if (existing == null) return NotFound();
+
+            // Create updated record, preserving CreatedAt from existing
+            var updatedTx = tx with 
+            { 
+                Id = id, 
+                CreatedAt = existing.CreatedAt, // Preserve original creation time
+                UpdatedAt = DateTime.UtcNow 
+            };
+            
+            // Mark the new object as Modified
+            _context.Transactions.Update(updatedTx);
+            
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TransactionExists(id)) return NotFound();
+                throw;
+            }
+
             return NoContent();
         }
 
         [HttpDelete("{id:guid}")]
-        public IActionResult Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
-            var removed = Store.RemoveAll(x => x.Id == id);
-            return removed > 0 ? NoContent() : NotFound();
+            var transaction = await _context.Transactions.FindAsync(id);
+            if (transaction == null) return NotFound();
+
+            _context.Transactions.Remove(transaction);
+            await _context.SaveChangesAsync();
+            return NoContent();
         }
 
         [HttpPost("{id:guid}/match")]
-        public IActionResult MatchTransaction(Guid id, [FromBody] TransactionMatchRequest request)
+        public async Task<IActionResult> MatchTransaction(Guid id, [FromBody] TransactionMatchRequest request)
         {
-            var transaction = Store.FirstOrDefault(x => x.Id == id);
+            var transaction = await _context.Transactions.AsNoTracking().FirstOrDefaultAsync(x => x.Id == id);
             if (transaction == null) return NotFound();
 
             // Validate double-entry requirements
@@ -68,21 +109,25 @@ namespace Sifr.Server.Controllers
                 return BadRequest(new { errors = validation.Errors });
             }
 
-            // Update transaction status
+            // Create updated record
             var matchedTransaction = transaction with
             {
                 AccountId = request.DebitAccountId, // Primary account for display
                 Status = TransactionStatus.Matched,
                 UpdatedAt = DateTime.UtcNow
             };
-
-            var index = Store.FindIndex(x => x.Id == id);
-            Store[index] = matchedTransaction;
-
-            // In a real implementation, this would also create a corresponding JournalEntry
-            // with debit and credit lines
+            
+            // Note: In a real implementation, create JournalEntry here.
+            
+            _context.Transactions.Update(matchedTransaction);
+            await _context.SaveChangesAsync();
 
             return Ok(matchedTransaction);
+        }
+        
+        private bool TransactionExists(Guid id)
+        {
+            return _context.Transactions.Any(e => e.Id == id);
         }
     }
 

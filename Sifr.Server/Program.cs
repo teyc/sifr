@@ -1,6 +1,7 @@
 using Sifr.Server.Middleware;
 using Sifr.Server.Services;
 using Sifr.Server.Filters;
+using Sifr.Server.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Sifr.Server;
@@ -41,6 +42,15 @@ var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
+    
+    // Seed Data
+    using (var scope = app.Services.CreateScope())
+    {
+        var services = scope.ServiceProvider;
+        var context = services.GetRequiredService<ApplicationDbContext>();
+        // context.Database.Migrate(); // Ensure DB is created/migrated
+        DataSeeder.Seed(context);
+    }
 }
 
 // Add accounting audit middleware
