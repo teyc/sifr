@@ -39,8 +39,24 @@ This task board organizes the 60 tickets from the PRD into a Kanban-style workfl
         *   Models compile and are compatible with EF Core `OnModelCreating` configuration.
     *   **Dependencies**: Ticket 1.3.
     *   **Assignee**: Unassigned
-6. **Ticket 2.2: Implement Multi-Tenancy** - Description: Add TenantId to entities; configure query filters. - Acceptance Criteria: Data isolated per tenant. - Dependencies: Ticket 2.1. - Assignee: Unassigned
-7. **Ticket 2.3: Migrations and Seeding** - Description: Create initial migrations; seed chart of accounts, tax codes. - Acceptance Criteria: DB schema created; sample data inserted. - Dependencies: Ticket 2.2. - Assignee: Unassigned
+6. **Ticket 2.2: Implement Multi-Tenancy**
+    *   **Description**: Add `TenantId` (Guid) to `BaseEntity` (or all relevant entities). Configure Global Query Filters in `ApplicationDbContext` to filter by `TenantId`. Note: For Local-First SQLite, `TenantId` allows multiple businesses in one DB or easy sync to cloud. Ensure `TenantId` is set automatically on `SaveChanges`.
+    *   **Acceptance Criteria**:
+        *   All entities have `TenantId`.
+        *   Global Query Filter prevents retrieving another tenant's data.
+        *   `SaveChanges` interceptor or override automatically populates `TenantId` from the current user (or selected context).
+        *   Verifiable: Create two tenants, ensure Tenant A cannot see Tenant B's data.
+    *   **Dependencies**: Ticket 2.1.
+    *   **Assignee**: Unassigned
+7. **Ticket 2.3: Migrations and Seeding**
+    *   **Description**: Create initial EF Core migration for the full schema (including new entities from 2.1 and cleanup from 1.3). Create a `DataSeeder` class to populate initial data: Chart of Accounts (standard AU template), Tax Codes (GST 10%, GST Free, etc.), and a Demo Tenant with sample transactions if in Development mode.
+    *   **Acceptance Criteria**:
+        *   `dotnet ef migrations add InitialSchema` succeeds.
+        *   Database updates successfully.
+        *   App startup triggers seeding check.
+        *   Database contains standard Chart of Accounts (Assets, Liabilities, etc.) and Tax Codes after run.
+    *   **Dependencies**: Ticket 2.2.
+    *   **Assignee**: Unassigned
 8. **Ticket 3.1: Dashboard Layout** - Description: Build responsive layout with sidebar navigation and main content area. - Acceptance Criteria: Layout renders on desktop/mobile. - Dependencies: Ticket 1.1. - Assignee: Unassigned
 9. **Ticket 3.2: Bank Balance Widget** - Description: Create component to display aggregated bank balances from API. - Acceptance Criteria: Balances update in real-time. - Dependencies: Ticket 3.1, API endpoints. - Assignee: Unassigned
 10. **Ticket 3.3: P&L Summary Widget** - Description: Implement P&L calculation and display with charts. - Acceptance Criteria: Accurate calculations; interactive chart. - Dependencies: Ticket 3.1, Reporting API. - Assignee: Unassigned
