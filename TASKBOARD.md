@@ -11,9 +11,34 @@ This task board organizes the 60 tickets from the PRD into a Kanban-style workfl
 ## Tickets
 
 ### Backlog
-3. **Ticket 1.3: Set Up Database** - Description: Install PostgreSQL, configure connection strings, set up Entity Framework Core. - Acceptance Criteria: Database connection established; initial migration runs. - Dependencies: Ticket 1.1. - Assignee: Unassigned
-4. **Ticket 1.4: CI/CD Pipeline** - Description: Set up GitHub Actions or Azure DevOps for build, test, deploy. - Acceptance Criteria: Pipeline runs on push; deploys to staging. - Dependencies: Ticket 1.1. - Assignee: Unassigned
-5. **Ticket 2.1: Define Core Entities** - Description: Create EF models for User, Company, Account, Transaction, Invoice, Bill, TaxCode. - Acceptance Criteria: Models compile; relationships defined. - Dependencies: Ticket 1.3. - Assignee: Unassigned
+3. **Ticket 1.3: Set Up Database (SQLite)**
+    *   **Description**: Install `Microsoft.EntityFrameworkCore.Sqlite` in `Sifr.Server` (and Client if using Blazor Hybrid). Define `ApplicationDbContext`. Configure connection string for local `sifr.db` in `appsettings.json`.
+    *   **Acceptance Criteria**:
+        *   SQLite packages installed.
+        *   Connection string points to a local file (e.g., `sifr.db`).
+        *   `dotnet ef database update` creates the working database file.
+        *   Initial migration applied.
+    *   **Dependencies**: Ticket 1.1.
+    *   **Assignee**: Unassigned
+4. **Ticket 1.4: CI/CD Pipeline**
+    *   **Description**: Create a GitHub Actions workflow in `.github/workflows/build-and-test.yml` to automate the build and test process.
+    *   **Acceptance Criteria**:
+        *   Workflow triggers on `push` to `master` and `pull_request`.
+        *   Steps include: Checkout, Setup .NET 8 SDK, `dotnet restore`, `dotnet build --no-restore`, `dotnet test --no-build`.
+        *   Build passes cleanly without warnings.
+        *   All tests pass.
+    *   **Dependencies**: Ticket 1.1.
+    *   **Assignee**: Unassigned
+5. **Ticket 2.1: Define Core Entities**
+    *   **Description**: Create Entity Framework Core models in `Sifr.Shared` (or `Sifr.Server.Data.Entities`). Models needed: `Company` (Tenant), `Account` (Chart of Accounts), `Transaction` (Journal Entry Header), `TransactionLine` (Journal Entry Lines), `Invoice`, `InvoiceLine`, `Bill`, `BillLine`, `TaxCode`. Ensure correct relationships (One-to-Many, Many-to-Many) and foreign keys.
+    *   **Acceptance Criteria**:
+        *   Entities inherit from a common `BaseEntity` (Id, CreatedAt, UpdatedAt).
+        *   `Account` has properties: Code (string), Name, Type (Asset/Liability/Equity/Income/Expense).
+        *   `Transaction` adheres to double-entry principles (Lines sum to zero, or strict Debit/Credit columns).
+        *   Relationships: `Company` -> `Account` (1:N), `Invoice` -> `Customer` (1:1), `Invoice` -> `InvoiceLine` (1:N).
+        *   Models compile and are compatible with EF Core `OnModelCreating` configuration.
+    *   **Dependencies**: Ticket 1.3.
+    *   **Assignee**: Unassigned
 6. **Ticket 2.2: Implement Multi-Tenancy** - Description: Add TenantId to entities; configure query filters. - Acceptance Criteria: Data isolated per tenant. - Dependencies: Ticket 2.1. - Assignee: Unassigned
 7. **Ticket 2.3: Migrations and Seeding** - Description: Create initial migrations; seed chart of accounts, tax codes. - Acceptance Criteria: DB schema created; sample data inserted. - Dependencies: Ticket 2.2. - Assignee: Unassigned
 8. **Ticket 3.1: Dashboard Layout** - Description: Build responsive layout with sidebar navigation and main content area. - Acceptance Criteria: Layout renders on desktop/mobile. - Dependencies: Ticket 1.1. - Assignee: Unassigned
@@ -61,7 +86,7 @@ This task board organizes the 60 tickets from the PRD into a Kanban-style workfl
 50. **Ticket 13.3: AI Validation** - Description: Test AI accuracy with datasets. - Acceptance Criteria: Meets KPIs. - Dependencies: Ticket 10.4. - Assignee: Unassigned
 51. **Ticket 13.4: User Acceptance** - Description: Manual testing with personas. - Acceptance Criteria: Feedback incorporated. - Dependencies: Ticket 13.2. - Assignee: Unassigned
 52. **Ticket 14.1: Cloud Hosting** - Description: Deploy to Azure/AWS. - Acceptance Criteria: App live; scalable. - Dependencies: Ticket 1.4. - Assignee: Unassigned
-53. **Ticket 14.2: Local Sync** - Description: Implement cloud-local hybrid. - Acceptance Criteria: Data syncs bidirectionally. - Dependencies: Ticket 14.1. - Assignee: Unassigned
+53. **Ticket 14.2: Local Sync Implementation** - Description: Implement Dotmim.Sync for SQLite (Client) <-> SQL Server/Postgres (Server) sync. - Acceptance Criteria: Data syncs bidirectionally; offline changes merge. - Dependencies: Ticket 14.1. - Assignee: Unassigned
 54. **Ticket 14.3: Browser Extension** - Description: Build extension for data extraction. - Acceptance Criteria: Extracts CSV/PDF from sites. - Dependencies: Ticket 9.4. - Assignee: Unassigned
 55. **Ticket 14.4: Performance Monitoring** - Description: Add logging, monitoring. - Acceptance Criteria: Metrics tracked. - Dependencies: Ticket 14.1. - Assignee: Unassigned
 56. **Ticket 15.1: Caching** - Description: Implement Redis for queries. - Acceptance Criteria: Response times <1s. - Dependencies: Ticket 2.3. - Assignee: Unassigned

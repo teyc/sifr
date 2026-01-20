@@ -191,8 +191,9 @@ flowchart TD
 ## 4. Technical Architecture
 
 ### Backend
-- **Services:** WebAPI (ASP.NET Core) for ledger, reconciliation, reporting; separate AI service for ML models.
-- **Database:** PostgreSQL with normalized schema; support for multi-tenancy.
+- **Services:** WebAPI (ASP.NET Core) for sync and AI offloading; Local Desktop App (Blazor Hybrid/MAUI).
+- **Database:** SQLite (Local-First) with Sync to SQL Server/PostgreSQL (Cloud Backend).
+- **Sync Engine:** Dotmim.Sync for bidirectional data synchronization.
 - **Normalization Layer:** ETL pipeline for CSV/PDF/email inputs.
 - **Ledger:** In-memory or cached double-entry engine.
 - **AI Integration:** REST API to AI modules for predictions.
@@ -205,9 +206,11 @@ graph TD
     B --> D[Reconciliation Service]
     B --> E[Reporting Service]
     D --> F[AI Service]
-    C --> G[PostgreSQL DB]
+    C --> G[SQLite Local DB]
     D --> G
     E --> G
+    G <--> I[Dotmim.Sync]
+    I <--> J[Cloud DB (PostgreSQL/SQL Server)]
     F --> H[ML Models]
 ```
 
@@ -227,7 +230,7 @@ graph TD
 
 ### Extensibility
 - **Plugins:** Modular design for Open Banking, third-party apps.
-- **Sync:** Cloud-local hybrid with conflict resolution.
+- **Sync:** Local-First architecture using Dotmim.Sync to synchronize SQLite (Client) with Cloud DB. Handles conflict resolution and offline capabilities.
 
 ### API Contract Schemas
 - **Reconciliation Match API:** POST /api/reconcile/match { transactionId: UUID, suggestions: [] } → { matched: bool, accountId: UUID }
@@ -353,10 +356,10 @@ Each task is broken down into granular subtasks (tickets) that can be assigned t
      - Description: Implement OAuth authentication with role-based access (Owner, Accountant, Bookkeeper). Use ASP.NET Identity or external provider.
      - Acceptance Criteria: Login/logout works; roles assigned correctly.
      - Dependencies: Ticket 1.1.
-   - **Ticket 1.3: Set Up Database**
-     - Description: Install PostgreSQL, configure connection strings, set up Entity Framework Core.
-     - Acceptance Criteria: Database connection established; initial migration runs.
-     - Dependencies: Ticket 1.1.
+    - **Ticket 1.3: Set Up Database (SQLite)**
+      - Description: Install `Microsoft.EntityFrameworkCore.Sqlite`. Configure `ApplicationDbContext` to use SQLite.
+      - Acceptance Criteria: Application creates `sifr.db` locally; migrations apply successfully.
+      - Dependencies: Ticket 1.1.
    - **Ticket 1.4: CI/CD Pipeline**
      - Description: Set up GitHub Actions or Azure DevOps for build, test, deploy.
      - Acceptance Criteria: Pipeline runs on push; deploys to staging.
@@ -579,9 +582,9 @@ Each task is broken down into granular subtasks (tickets) that can be assigned t
       - Description: Deploy to Azure/AWS.
       - Acceptance Criteria: App live; scalable.
       - Dependencies: Ticket 1.4.
-    - **Ticket 14.2: Local Sync**
-      - Description: Implement cloud-local hybrid.
-      - Acceptance Criteria: Data syncs bidirectionally.
+    - **Ticket 14.2: Local Sync Implementation**
+      - Description: Implement Dotmim.Sync in Client and Server.
+      - Acceptance Criteria: Data syncs between local SQLite and cloud DB; offline changes merge on reconnect.
       - Dependencies: Ticket 14.1.
     - **Ticket 14.3: Browser Extension**
       - Description: Build extension for data extraction.
