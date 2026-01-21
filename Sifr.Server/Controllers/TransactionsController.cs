@@ -41,15 +41,13 @@ namespace Sifr.Server.Controllers
         public async Task<ActionResult<Transaction>> Post([FromBody] Transaction tx)
         {
             var now = DateTime.UtcNow;
-            var newTx = tx with { 
-                Id = tx.Id == Guid.Empty ? Guid.NewGuid() : tx.Id, 
-                CreatedAt = now, 
-                UpdatedAt = now 
-            };
+            if (tx.Id == Guid.Empty) tx.Id = Guid.NewGuid();
+            tx.CreatedAt = now;
+            tx.UpdatedAt = now;
             
-            _context.Transactions.Add(newTx);
+            _context.Transactions.Add(tx);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(Get), new { id = newTx.Id }, newTx);
+            return CreatedAtAction(nameof(Get), new { id = tx.Id }, tx);
         }
 
         [HttpPut("{id:guid}")]
@@ -62,15 +60,13 @@ namespace Sifr.Server.Controllers
             if (existing == null) return NotFound();
 
             // Create updated record, preserving CreatedAt from existing
-            var updatedTx = tx with 
-            { 
-                Id = id, 
-                CreatedAt = existing.CreatedAt, // Preserve original creation time
-                UpdatedAt = DateTime.UtcNow 
-            };
+            // Create updated record, preserving CreatedAt from existing
+            tx.Id = id;
+            tx.CreatedAt = existing.CreatedAt;
+            tx.UpdatedAt = DateTime.UtcNow;
             
             // Mark the new object as Modified
-            _context.Transactions.Update(updatedTx);
+            _context.Transactions.Update(tx);
             
             try
             {
@@ -110,19 +106,17 @@ namespace Sifr.Server.Controllers
             }
 
             // Create updated record
-            var matchedTransaction = transaction with
-            {
-                AccountId = request.DebitAccountId, // Primary account for display
-                Status = TransactionStatus.Matched,
-                UpdatedAt = DateTime.UtcNow
-            };
+            // Create updated record
+            transaction.AccountId = request.DebitAccountId;
+            transaction.Status = TransactionStatus.Matched;
+            transaction.UpdatedAt = DateTime.UtcNow;
             
             // Note: In a real implementation, create JournalEntry here.
             
-            _context.Transactions.Update(matchedTransaction);
+            _context.Transactions.Update(transaction);
             await _context.SaveChangesAsync();
 
-            return Ok(matchedTransaction);
+            return Ok(transaction);
         }
         
         private bool TransactionExists(Guid id)

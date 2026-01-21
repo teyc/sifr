@@ -334,27 +334,22 @@ namespace Sifr.Server.Migrations
                 {
                     b.OwnsOne("Sifr.Shared.Models.Monetary", "Amount", b1 =>
                         {
-                            b1.Property<Guid>("TransactionId")
-                                .HasColumnType("TEXT");
+                            b1.Property<Guid>("TransactionId");
 
-                            b1.Property<int>("AmountMinor")
-                                .HasColumnType("INTEGER")
-                                .HasJsonPropertyName("amount_minor");
+                            b1.Property<int>("AmountMinor");
 
                             b1.Property<string>("Currency")
-                                .IsRequired()
-                                .HasColumnType("TEXT")
-                                .HasJsonPropertyName("currency");
+                                .IsRequired();
 
-                            b1.Property<int>("Scale")
-                                .HasColumnType("INTEGER")
-                                .HasJsonPropertyName("scale");
+                            b1.Property<int>("Scale");
 
                             b1.HasKey("TransactionId");
 
                             b1.ToTable("Transactions");
 
-                            b1.HasJsonPropertyName("amount");
+                            b1
+                                .ToJson("Amount")
+                                .HasColumnType("TEXT");
 
                             b1.WithOwner()
                                 .HasForeignKey("TransactionId");

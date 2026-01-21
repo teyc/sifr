@@ -18,6 +18,6 @@ public class ApplicationDbContext : IdentityDbContext
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
-        builder.Entity<Transaction>().OwnsOne(t => t.Amount);
+        builder.Entity<Transaction>().OwnsOne(t => t.Amount, b => b.ToJson());
     }
 }

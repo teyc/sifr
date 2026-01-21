@@ -15,15 +15,33 @@ namespace Sifr.Shared.Models
     /// <param name="Source">Origin of the transaction (e.g., "BankFeed", "Manual").</param>
     /// <param name="CreatedAt">Timestamp of creation.</param>
     /// <param name="UpdatedAt">Timestamp of last update.</param>
-    public record Transaction(
-        Guid Id,
-        DateTime Date,
-        [property: JsonPropertyName("amount")] Monetary Amount,
-        string Description,
-        Guid? AccountId,
-        TransactionStatus Status,
-        string Source,
-        DateTime CreatedAt,
-        DateTime UpdatedAt
-    );
+    public class Transaction
+    {
+        public Guid Id { get; set; }
+        public DateTime Date { get; set; }
+        
+        public Monetary Amount { get; set; } = new();
+        
+        public string Description { get; set; } = string.Empty;
+        public Guid? AccountId { get; set; }
+        public TransactionStatus Status { get; set; }
+        public string Source { get; set; } = string.Empty;
+        public DateTime CreatedAt { get; set; }
+        public DateTime UpdatedAt { get; set; }
+
+        public Transaction() { }
+
+        public Transaction(Guid id, DateTime date, Monetary amount, string description, Guid? accountId, TransactionStatus status, string source, DateTime createdAt, DateTime updatedAt)
+        {
+            Id = id;
+            Date = date;
+            Amount = amount;
+            Description = description;
+            AccountId = accountId;
+            Status = status;
+            Source = source;
+            CreatedAt = createdAt;
+            UpdatedAt = updatedAt;
+        }
+    }
 }
