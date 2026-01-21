@@ -105,6 +105,9 @@ This task board organizes the 60 tickets from the PRD into a Kanban-style workfl
 ### In Progress
 - None
 
+
+
+### Review
 3. **Ticket 1.3: Set Up Database (SQLite)**
     *   **Description**: Install `Microsoft.EntityFrameworkCore.Sqlite` in `Sifr.Server` (and Client if using Blazor Hybrid). Define `ApplicationDbContext`. Configure connection string for local `sifr.db` in `appsettings.json`.
     *   **Acceptance Criteria**:
@@ -115,9 +118,6 @@ This task board organizes the 60 tickets from the PRD into a Kanban-style workfl
     *   **Dependencies**: Ticket 1.1.
     *   **Assignee**: Subagent
 
-### Review
-- None
-
 ### Done
 - None
 
@@ -125,17 +125,17 @@ This task board organizes the 60 tickets from the PRD into a Kanban-style workfl
 
 #### Backlog
 2. **Ticket 1.2: Configure Authentication** - Status: Unassigned
-3. **Ticket 1.3: Set Up Database** - Status: In Progress (Subagent)
+3. **Ticket 1.3: Set Up Database** - Status: Review (Subagent)
 4. **Ticket 1.4: CI/CD Pipeline** - Status: Unassigned
 5. **Ticket 2.1: Define Core Entities** - Status: Unassigned
 6. **Ticket 2.2: Implement Multi-Tenancy** - Status: Unassigned
 7. **Ticket 2.3: Migrations and Seeding** - Status: Unassigned
 
 #### In Progress
-- Ticket 1.3: Set Up Database (SQLite) currently in progress.
+- No tickets currently in progress.
 
 #### Review
-- No tickets currently under review.
+- Ticket 1.3: Set Up Database (SQLite) currently under review.
 
 #### Done
 1. **Ticket 1.1: Initialize Blazor WASM Solution** - Status: Completed
