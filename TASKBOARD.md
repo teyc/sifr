@@ -13,6 +13,10 @@ This task board organizes the 60 tickets from the PRD into a Kanban-style workfl
 ### Backlog
 
 
+***
+
+### In Progress
+
 5. **Ticket 2.1: Define Core Entities**
     *   **Description**: Create Entity Framework Core models in `Sifr.Shared` (or `Sifr.Server.Data.Entities`). Models needed: `Company` (Tenant), `Account` (Chart of Accounts), `Transaction` (Journal Entry Header), `TransactionLine` (Journal Entry Lines), `Invoice`, `InvoiceLine`, `Bill`, `BillLine`, `TaxCode`. Ensure correct relationships (One-to-Many, Many-to-Many) and foreign keys.
     *   **Acceptance Criteria**:
@@ -22,7 +26,7 @@ This task board organizes the 60 tickets from the PRD into a Kanban-style workfl
         *   Relationships: `Company` -> `Account` (1:N), `Invoice` -> `Customer` (1:1), `Invoice` -> `InvoiceLine` (1:N).
         *   Models compile and are compatible with EF Core `OnModelCreating` configuration.
     *   **Dependencies**: Ticket 1.3.
-    *   **Assignee**: Unassigned
+    *   **Assignee**: Subagent
 6. **Ticket 2.2: Implement Multi-Tenancy**
     *   **Description**: Add `TenantId` (Guid) to `BaseEntity` (or all relevant entities). Configure Global Query Filters in `ApplicationDbContext` to filter by `TenantId`. Note: For Local-First SQLite, `TenantId` allows multiple businesses in one DB or easy sync to cloud. Ensure `TenantId` is set automatically on `SaveChanges`.
     *   **Acceptance Criteria**:
@@ -95,7 +99,13 @@ This task board organizes the 60 tickets from the PRD into a Kanban-style workfl
 59. **Ticket 15.4: Scalability Testing** - Description: Load test for 1000 users. - Acceptance Criteria: Handles load. - Dependencies: Ticket 15.3. - Assignee: Unassigned
 
 ### In Progress
-- 4. **Ticket 1.4: CI/CD Pipeline**
+
+- None
+
+
+
+### Review
+4. **Ticket 1.4: CI/CD Pipeline**
     *   **Description**: Create a GitHub Actions workflow in `.github/workflows/build-and-test.yml` to automate the build and test process.
     *   **Acceptance Criteria**:
         *   Workflow triggers on `push` to `master` and `pull_request`.
@@ -104,11 +114,6 @@ This task board organizes the 60 tickets from the PRD into a Kanban-style workfl
         *   All tests pass.
     *   **Dependencies**: Ticket 1.1.
     *   **Assignee**: Subagent
-- None
-
-
-
-### Review
 3. **Ticket 1.3: Set Up Database (SQLite)**
     *   **Description**: Install `Microsoft.EntityFrameworkCore.Sqlite` in `Sifr.Server` (and Client if using Blazor Hybrid). Define `ApplicationDbContext`. Configure connection string for local `sifr.db` in `appsettings.json`.
     *   **Acceptance Criteria**:
