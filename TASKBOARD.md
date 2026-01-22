@@ -35,7 +35,7 @@ This task board organizes the 60 tickets from the PRD into a Kanban-style workfl
         *   `SaveChanges` interceptor or override automatically populates `TenantId` from the current user (or selected context).
         *   Verifiable: Create two tenants, ensure Tenant A cannot see Tenant B's data.
     *   **Dependencies**: Ticket 2.1.
-    *   **Assignee**: Unassigned
+    *   **Assignee**: Subagent
 7. **Ticket 2.3: Migrations and Seeding**
     *   **Description**: Create initial EF Core migration for the full schema (including new entities from 2.1 and cleanup from 1.3). Create a `DataSeeder` class to populate initial data: Chart of Accounts (standard AU template), Tax Codes (GST 10%, GST Free, etc.), and a Demo Tenant with sample transactions if in Development mode.
     *   **Acceptance Criteria**:
