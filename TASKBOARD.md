@@ -12,15 +12,7 @@ This task board organizes the 60 tickets from the PRD into a Kanban-style workfl
 
 ### Backlog
 
-4. **Ticket 1.4: CI/CD Pipeline**
-    *   **Description**: Create a GitHub Actions workflow in `.github/workflows/build-and-test.yml` to automate the build and test process.
-    *   **Acceptance Criteria**:
-        *   Workflow triggers on `push` to `master` and `pull_request`.
-        *   Steps include: Checkout, Setup .NET 8 SDK, `dotnet restore`, `dotnet build --no-restore`, `dotnet test --no-build`.
-        *   Build passes cleanly without warnings.
-        *   All tests pass.
-    *   **Dependencies**: Ticket 1.1.
-    *   **Assignee**: Unassigned
+
 5. **Ticket 2.1: Define Core Entities**
     *   **Description**: Create Entity Framework Core models in `Sifr.Shared` (or `Sifr.Server.Data.Entities`). Models needed: `Company` (Tenant), `Account` (Chart of Accounts), `Transaction` (Journal Entry Header), `TransactionLine` (Journal Entry Lines), `Invoice`, `InvoiceLine`, `Bill`, `BillLine`, `TaxCode`. Ensure correct relationships (One-to-Many, Many-to-Many) and foreign keys.
     *   **Acceptance Criteria**:
@@ -103,6 +95,15 @@ This task board organizes the 60 tickets from the PRD into a Kanban-style workfl
 59. **Ticket 15.4: Scalability Testing** - Description: Load test for 1000 users. - Acceptance Criteria: Handles load. - Dependencies: Ticket 15.3. - Assignee: Unassigned
 
 ### In Progress
+- 4. **Ticket 1.4: CI/CD Pipeline**
+    *   **Description**: Create a GitHub Actions workflow in `.github/workflows/build-and-test.yml` to automate the build and test process.
+    *   **Acceptance Criteria**:
+        *   Workflow triggers on `push` to `master` and `pull_request`.
+        *   Steps include: Checkout, Setup .NET 8 SDK, `dotnet restore`, `dotnet build --no-restore`, `dotnet test --no-build`.
+        *   Build passes cleanly without warnings.
+        *   All tests pass.
+    *   **Dependencies**: Ticket 1.1.
+    *   **Assignee**: Subagent
 - None
 
 
