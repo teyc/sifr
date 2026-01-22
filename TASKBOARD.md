@@ -45,7 +45,13 @@ This task board organizes the 60 tickets from the PRD into a Kanban-style workfl
         *   Database contains standard Chart of Accounts (Assets, Liabilities, etc.) and Tax Codes after run.
     *   **Dependencies**: Ticket 2.2.
     *   **Assignee**: Unassigned
-8. **Ticket 3.1: Dashboard Layout** - Description: Build responsive layout with sidebar navigation and main content area. - Acceptance Criteria: Layout renders on desktop/mobile. - Dependencies: Ticket 1.1. - Assignee: Unassigned
+
+8. **Ticket 3.1: Dashboard Layout**
+    *   **Description**: Build responsive layout with sidebar navigation and main content area.
+    *   **Acceptance Criteria**: Layout renders on desktop/mobile.
+    *   **Dependencies**: Ticket 1.1.
+    *   **Assignee**: Subagent
+
 9. **Ticket 3.2: Bank Balance Widget** - Description: Create component to display aggregated bank balances from API. - Acceptance Criteria: Balances update in real-time. - Dependencies: Ticket 3.1, API endpoints. - Assignee: Unassigned
 10. **Ticket 3.3: P&L Summary Widget** - Description: Implement P&L calculation and display with charts. - Acceptance Criteria: Accurate calculations; interactive chart. - Dependencies: Ticket 3.1, Reporting API. - Assignee: Unassigned
 11. **Ticket 3.4: Outstanding Invoices Widget** - Description: List overdue invoices with links to details. - Acceptance Criteria: Filters work; drill-down enabled. - Dependencies: Ticket 3.1, Sales API. - Assignee: Unassigned
@@ -132,8 +138,6 @@ This task board organizes the 60 tickets from the PRD into a Kanban-style workfl
 #### Backlog
 2. **Ticket 1.2: Configure Authentication** - Status: Unassigned
 3. **Ticket 1.3: Set Up Database** - Status: Review (Subagent)
-4. **Ticket 1.4: CI/CD Pipeline** - Status: Unassigned
-5. **Ticket 2.1: Define Core Entities** - Status: Unassigned
 6. **Ticket 2.2: Implement Multi-Tenancy** - Status: Unassigned
 7. **Ticket 2.3: Migrations and Seeding** - Status: Unassigned
 
@@ -146,6 +150,8 @@ This task board organizes the 60 tickets from the PRD into a Kanban-style workfl
 #### Done
 1. **Ticket 1.1: Initialize Blazor WASM Solution** - Status: Completed
 2. **Ticket 1.2: Configure Authentication** - Status: Completed
+3. **Ticket 1.4: CI/CD Pipeline** - Status: Unassigned
+4. **Ticket 2.1: Define Core Entities** - Status: Completed
 
 ---
 
